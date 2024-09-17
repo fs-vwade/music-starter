@@ -29,63 +29,81 @@ The answers can be viewed directly below the respective prompt. The `solution` b
 
    </details>
 
-1. Complete `renderArtists` so that it renders the artists in state. The page should contain the name, image, and bio of each artist. If state is empty, then a corresponding message should be displayed.
+2. Complete `renderArtists` so that it renders the artists in state. The page should contain the name, image, and bio of each artist. If state is empty, then a corresponding message should be displayed.
 
-   <details>
-   <summary>Show Answer</summary>
+    <details>
+    <summary>Show Answer</summary>
 
    ```js
    function renderArtists() {
+     const artistList = document.querySelector("#artists");
+
      if (!state.artists.length) {
        artistList.innerHTML = "<li>No artists.</li>";
        return;
      }
 
      const artistCards = state.artists.map((artist) => {
-       const li = document.createElement("li");
-       li.innerHTML = `
-         <h2>${artist.name}</h2>
-         <img src="${artist.imageUrl}" alt="${artist.name}" />
-         <p>${artist.description}</p>
-       `;
-       return li;
+       const card = document.createElement("li");
+       card.innerHTML = `
+        <h2>${artist.name}</h2>
+        <img src="${artist.imageUrl}" alt="${artist.name}" />
+        <p>${artist.description}</p>
+      `;
+       return card;
      });
 
      artistList.replaceChildren(...artistCards);
    }
    ```
 
-   </details>
+    </details>
 
-1. Complete `addArtist()` so that it makes a POST request to the API with data from the form. The page should automatically rerender with the new artist added to the list.
+3. Complete `addArtist()` so that it makes a POST request to the API with the input `artist` as the body.
 
    <details>
    <summary>Show Answer</summary>
 
    ```js
-   async function addArtist(event) {
-     event.preventDefault();
-
+   async function addArtist(artist) {
      try {
        const response = await fetch(API_URL, {
          method: "POST",
          headers: { "Content-Type": "application/json" },
-         body: JSON.stringify({
-           name: addArtistForm.name.value,
-           imageUrl: addArtistForm.imageUrl.value,
-           description: addArtistForm.description.value,
-         }),
+         body: JSON.stringify(artist),
        });
+       const json = await response.json();
 
-       if (!response.ok) {
-         throw new Error("Failed to create artist");
+       if (json.error) {
+         throw new Error(json.error.message);
        }
-
-       render();
      } catch (error) {
        console.error(error);
      }
    }
+   ```
+
+   </details>
+
+4. Add an event listener to the form so that when it is submitted, it will call `addArtist` with data from the form. Make sure to rerender after a response is received from the API!
+
+   <details>
+   <summary>Show Answer</summary>
+
+   ```js
+   const form = document.querySelector("form");
+   form.addEventListener("submit", async (event) => {
+     event.preventDefault();
+
+     const artist = {
+       name: form.artistName.value,
+       description: form.description.value,
+       imageUrl: form.imageUrl.value,
+     };
+
+     await addArtist(artist);
+     render();
+   });
    ```
 
    </details>
