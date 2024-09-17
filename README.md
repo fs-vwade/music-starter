@@ -29,34 +29,6 @@ The answers can be viewed directly below the respective prompt. The `solution` b
 
    </details>
 
-1. Complete `renderArtists` so that it renders the artists in state. The page should contain the name, image, and bio of each artist. If state is empty, then a corresponding message should be displayed.
-
-   <details>
-   <summary>Show Answer</summary>
-
-   ```js
-   function renderArtists() {
-     if (!state.artists.length) {
-       artistList.innerHTML = "<li>No artists.</li>";
-       return;
-     }
-
-     const artistCards = state.artists.map((artist) => {
-       const li = document.createElement("li");
-       li.innerHTML = `
-         <h2>${artist.name}</h2>
-         <img src="${artist.imageUrl}" alt="${artist.name}" />
-         <p>${artist.description}</p>
-       `;
-       return li;
-     });
-
-     artistList.replaceChildren(...artistCards);
-   }
-   ```
-
-   </details>
-
 1. Complete `addArtist()` so that it makes a POST request to the API with data from the form. The page should automatically rerender with the new artist added to the list.
 
    <details>
@@ -85,6 +57,34 @@ The answers can be viewed directly below the respective prompt. The `solution` b
      } catch (error) {
        console.error(error);
      }
+   }
+   ```
+
+   </details>
+
+1. Complete `renderArtists` so that it renders the artists in state. The page should contain the name, image, and bio of each artist. If state is empty, then a corresponding message should be displayed.
+
+   <details>
+   <summary>Show Answer</summary>
+
+   ```js
+   function renderArtists() {
+     if (!state.artists.length) {
+       artistList.innerHTML = "<li>No artists.</li>";
+       return;
+     }
+
+     const artistCards = state.artists.map((artist) => {
+       const li = document.createElement("li");
+       li.innerHTML = `
+         <h2>${artist.name}</h2>
+         <img src="${artist.imageUrl}" alt="${artist.name}" />
+         <p>${artist.description}</p>
+       `;
+       return li;
+     });
+
+     artistList.replaceChildren(...artistCards);
    }
    ```
 
