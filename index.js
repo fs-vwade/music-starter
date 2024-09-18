@@ -1,3 +1,6 @@
+// for testing (perhaps not-so-accidental?)
+const fetch = require("node-fetch");
+
 const COHORT = "2408-FTB-ET-WEB-FT";
 const API_URL = `https://fsa-crud-2aa9294fe819.herokuapp.com/api/${COHORT}/artists`;
 
