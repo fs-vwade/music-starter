@@ -59,7 +59,11 @@ async function add_artist(artist) {
 
 		const result = await response.json();
 
-		console.log("Artist add operation completed successfully");
+		if (result.error) {
+			throw new Error(`API Error: ${result.error.message || "Unknown error"}`);
+		}
+
+		console.log("Artist add operation completed successfully", result.data);
 		return result.data;
 	} catch (error) {
 		console.error("Error adding artist:", error);
@@ -89,7 +93,7 @@ render();
 // #region TEST
 const new_artist = {
 	name: "Santiago",
-	description: "A string melody of love from beyond the border.",
+	description: "A melody of guitar love from beyond the border.",
 	imageURL: "https://loremflickr.com/320/240/song,musician?q=5",
 };
 
