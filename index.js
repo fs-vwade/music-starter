@@ -8,7 +8,7 @@ const state = {
 };
 
 /** Updates state with artists from API */
-async function getArtists() {
+async function get_artists() {
 	try {
 		const response = await fetch(API_URL);
 
@@ -30,26 +30,43 @@ async function getArtists() {
 
 		state.artists = result.data;
 	} catch (error) {
-		console.log("fn: getArtists: Failed to fetch Artists", error);
+		console.log("fn: get_artists: Failed to fetch Artists", error);
 	}
 }
 
 /** Asks the API to create a new artist based on the given `artist` */
-async function addArtist(artist) {
-	// TODO
+/**
+ * @param {Object} artist
+ */
+async function add_artist(artist) {
+	// TODO -- we need to utilize a POST request
+	try {
+		const metadata = {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(artist),
+		};
+		const response = await fetch(API_URL, metadata);
+
+		if (!response.ok) {
+			throw new Error(`URL Error: ${response.status} ${response.statusText}`);
+		}
+	} catch (error) {}
 }
 
 // === Render ===
 
 /** Renders artists from state */
-function renderArtists() {
+function $render_artists() {
 	// TODO
 }
 
 /** Syncs state with the API and rerender */
 async function render() {
-	await getArtists();
-	renderArtists();
+	await get_artists();
+	$render_artists();
 }
 
 // === Script ===
