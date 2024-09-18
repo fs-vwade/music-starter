@@ -1,10 +1,10 @@
 // for testing (perhaps not-so-accidental?)
-const fetch = require("node-fetch");
+import fetch from "node-fetch";
 
 const COHORT = "2408-FTB-ET-WEB-FT";
 const API_URL = `https://fsa-crud-2aa9294fe819.herokuapp.com/api/${COHORT}/artists`;
 
-// === State ===
+// #region STATE
 
 const state = {
 	artists: [],
@@ -56,10 +56,18 @@ async function add_artist(artist) {
 		if (!response.ok) {
 			throw new Error(`URL Error: ${response.status} ${response.statusText}`);
 		}
-	} catch (error) {}
+
+		const result = await response.json();
+
+		console.log("Artist add operation completed successfully");
+		return result.data;
+	} catch (error) {
+		console.error("Error adding artist:", error);
+		return null;
+	}
 }
 
-// === Render ===
+// #region RENDER
 
 /** Renders artists from state */
 function $render_artists() {
@@ -72,8 +80,25 @@ async function render() {
 	$render_artists();
 }
 
-// === Script ===
+// #region SCRIPT
 
 render();
 
 // TODO: Add artist with form data when the form is submitted
+
+// #region TEST
+const new_artist = {
+	name: "Santiago",
+	description: "A string melody of love from beyond the border.",
+	imageURL: "https://loremflickr.com/320/240/song,musician?q=5",
+};
+
+add_artist(new_artist)
+	.then((result) => {
+		if (result) {
+			console.log("Artist added:", result);
+		} else {
+			console.log("Failed to add artist");
+		}
+	})
+	.catch((error) => console.error("Unexpected error:", error));
