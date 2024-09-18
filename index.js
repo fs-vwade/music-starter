@@ -9,31 +9,29 @@ const state = {
 
 /** Updates state with artists from API */
 async function getArtists() {
-	// TODO
-	const response = await fetch(API_URL);
+	try {
+		const response = await fetch(API_URL);
 
-	if (!response.ok) {
-		throw new Error(
-			`fn: getArtists: Error: ${response.status} ${response.statusText}`
-		);
-	}
+		if (!response.ok) {
+			throw new Error(`URL Error: ${response.status} ${response.statusText}`);
+		}
 
-	// expect an array here? (or some kind of object)
-	const result = await response.json();
+		// expect an array here? (or some kind of object)
+		const result = await response.json();
 
-	if (!result.success) {
-		throw new Error(`getArtists: API Error: ${result.error || "Unknown error"}`);
-	}
+		if (!result.success) {
+			// do something on error, do not overwrite state
+			throw new Error(`API Error: ${result.error || "Unknown error"}`);
+		}
 
-	if (!Array.isArray(result.data)) {
-		throw new Error(`getArtists: API Error: Unexpected data format: Expected an Array`);
-	}
+		if (!Array.isArray(result.data)) {
+			throw new Error(`API Error: Unexpected data format: Expected an Array`);
+		}
 
-	if (result.error) {
-		// do something on error, do not overwrite state
-	} else if (Array.isArray(result.data)) {
 		state.artists = result.data;
-	} else
+	} catch (error) {
+		console.log("fn: getArtists: Failed to fetch Artists", error);
+	}
 }
 
 /** Asks the API to create a new artist based on the given `artist` */
