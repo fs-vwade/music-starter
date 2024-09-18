@@ -2,12 +2,18 @@
 import fetch from "node-fetch";
 
 const COHORT = "2408-FTB-ET-WEB-FT";
-const API_URL = `https://fsa-crud-2aa9294fe819.herokuapp.com/api/${COHORT}/artists`;
+const API_URL = `https://fsa-crud-2aa9294fe819.herokuapp.com/api/${COHORT}/artists/`;
 
 // #region STATE
 
 const state = {
 	artists: [],
+	results: {
+		get: [],
+		put: [],
+		post: [],
+		delete: [],
+	},
 };
 
 /** Updates state with artists from API */
@@ -33,7 +39,7 @@ async function get_artists() {
 
 		state.artists = result.data;
 	} catch (error) {
-		console.log("fn: get_artists: Failed to fetch Artists", error);
+		console.error("Error: get_artists:", error);
 	}
 }
 
@@ -44,14 +50,13 @@ async function get_artists() {
 async function add_artist(artist) {
 	// TODO -- we need to utilize a POST request
 	try {
-		const metadata = {
+		const response = await fetch(API_URL, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
 			},
 			body: JSON.stringify(artist),
-		};
-		const response = await fetch(API_URL, metadata);
+		}); // await returns the value of the Promise
 
 		if (!response.ok) {
 			throw new Error(`URL Error: ${response.status} ${response.statusText}`);
@@ -63,10 +68,11 @@ async function add_artist(artist) {
 			throw new Error(`API Error: ${result.error.message || "Unknown error"}`);
 		}
 
-		console.log("Artist add operation completed successfully", result.data);
+		//console.log("Artist add operation completed successfully", result.data);
+		state.results.post.push(result);
 		return result.data;
 	} catch (error) {
-		console.error("Error adding artist:", error);
+		console.error("Error: add_artist:", error);
 		return null;
 	}
 }
@@ -91,18 +97,21 @@ render();
 // TODO: Add artist with form data when the form is submitted
 
 // #region TEST
-const new_artist = {
-	name: "Santiago",
-	description: "A melody of guitar love from beyond the border.",
-	imageURL: "https://loremflickr.com/320/240/song,musician?q=5",
-};
+if (true) {
+	const new_artist = {
+		name: "Santiago",
+		description: "A melody of guitar love from beyond the border.",
+		imageURL: "https://loremflickr.com/320/240/song,musician?q=5",
+	};
 
-add_artist(new_artist)
-	.then((result) => {
-		if (result) {
-			console.log("Artist added:", result);
-		} else {
-			console.log("Failed to add artist");
-		}
-	})
-	.catch((error) => console.error("Unexpected error:", error));
+	//add_artist(new_artist)
+	add_artist({})
+		.then((result) => {
+			if (result) {
+				console.log("Artist added:", result);
+			} else {
+				console.log("Failed to add artist");
+			}
+		})
+		.catch((error) => console.error("Unexpected error:", error));
+}
